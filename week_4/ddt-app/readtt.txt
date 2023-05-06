@@ -1,0 +1,189 @@
+Để tạo một rule mới gồm các thông tin như name, độ ưu tiên(priority), status, apply to product và Custom prices, bạn cần sửa các component trong mã nguồn của bạn.
+
+1. Trong component GeneralInformation:
+Thay vì lưu thông tin vào state của component HomePage, chuyển việc lưu thông tin vào state của component GeneralInformation.
+Thêm props "onChange" để khi thông tin được nhập vào, nó sẽ gọi hàm onChange để lưu lại thông tin. Ví dụ:
+function GeneralInformation(props) {
+    const { onChange, errors, generalInfo } = props
+
+    const handleChange = (value, name) => {
+        onChange({ ...generalInfo, [name]: value });
+    };
+
+    //...
+}
+2. Trong component ApplyProduct:
+Tạo một state mới để lưu thông tin về apply to product (ví dụ: selectedProducts).
+Cập nhật hàm handleChange của RadioButton specific products để hiển thị Modal và chọn sản phẩm từ API.
+Thêm props "onChange" để khi thông tin được chọn, nó sẽ gọi hàm onChange để lưu lại thông tin. Ví dụ:
+function ApplyProduct(props) {
+    const [value, setValue] = useState('all');
+    const [selectedProducts, setSelectedProducts] = useState([]);
+
+    const handleChange = useCallback((newValue) => {
+        if (newValue === 'specific') {
+            // Show modal and select products from API
+            // After selecting, update selectedProducts state and call onChange function to save the data
+        } else {
+            setValue(newValue);
+            props.onChange({ ...props.rule, applyProduct: newValue });
+        }
+    }, []);
+
+    //...
+}
+3. Trong component CustomPrices:
+Thêm props "onChange" để khi thông tin được nhập vào, nó sẽ gọi hàm onChange để lưu lại thông tin. Ví dụ:
+function CustomPrices(props) {
+    const [selected, setSelected] = useState(['fixed']);
+    const [value, setValue] = useState(0);
+
+    const handleChangeAmount = useCallback(
+        (newValue) => {
+            setValue(newValue);
+            props.onChange({ ...props.rule, customPrice: { type: selected[0], amount: newValue } });
+        },
+        [selected],
+    );
+
+    const handleChange = useCallback((value) => {
+        setSelected(value);
+        props.onChange({ ...props.rule, customPrice: { type: value[0], amount: value === 'fixed' ? value.amount : value } });
+    }, []);
+    
+    //...
+}
+
+
+
+
+
+
+4. Trong component HomePage, bạn có thể thêm state mới cho các thông tin của rule đang được tạo và sử dụng hàm handleSubmit để lưu rule vào localStorage khi đã kiểm tra và lưu thông tin thành công. Ngoài ra, bạn cũng có thể thêm hàm handleSelectRule để áp dụng rule đó và hiển thị sản phẩm theo yêu cầu.
+
+Ví dụ mã nguồn:
+
+export default function HomePage() {
+  const [generalInfo, setGeneralInfo] = useState({ name: "", priority: "", status: "enable" });
+  const [errors, setErrors] = useState({});
+  const [selected, setSelected] = useState('r1');
+  const [rule, setRule] = useState({
+    name: "",
+    priority: 0,
+    status: "enable",
+    applyProduct: "all",
+    customPrice: { type: "fixed", amount: 0 }
+  })
+
+  const handleSubmit = useCallback((event) => {
+    event.preventDefault();
+    let name = generalInfo.name ?? "";
+    let priority = generalInfo.priority ?? "";
+    let errors = {}
+
+    if (name.trim().length === 0) {
+      errors = { ...errors, name: "Name couldn't be blank" }
+    }
+
+    if (priority.trim().length === 0) {
+      errors = { ...errors, priority: "Priority couldn't be blank" }
+    } else {
+      if (parseInt(priority) < 0 || parseInt(priority) > 99) {
+        errors = { ...errors, priority: "Please enter an integer from 0 to 99. 0 is the highest priority" };
+      }
+    }
+
+    setErrors(errors);
+
+    if (Object.keys(errors).length === 0) {
+      try {
+        const newRule = { ...rule, ...generalInfo };
+        localStorage.setItem('pricing_rule', JSON.stringify(newRule));
+        setRule(newRule);
+      } catch (e) {
+        console.log(e);
+      }
+    }
+  }, [generalInfo, rule]);
+
+  const handleSelectRule = useCallback((event) => {
+    const selectedRule = JSON.parse(localStorage.getItem(event.target.value));
+    setSelected(event.target.value);
+
+    // Apply selected rule to show products according to the rule
+    // ...
+  }, []);
+
+  //...
+}
+
+
+
+
+5. Trong component ProductList:
+Thêm props "rule" để truyền thông tin về rule đang được áp dụng cho sản phẩm.
+Cập nhật hàm filterProduct để áp dụng rule lên danh sách sản phẩm và hiển thị các sản phẩm phù hợp. Ví dụ:
+export default function ProductList(props) {
+  const [products, setProducts] = useState([]);
+
+  useEffect(() => {
+    // Call API to get all products
+    //...
+
+    setProducts(response.data);
+  }, []);
+
+  const filterProduct = useCallback((product) => {
+    if (props.rule.applyProduct === 'all' || props.rule.applyProduct === product.category) {
+      if (props.rule.customPrice.type === 'fixed') {
+        return product.price - props.rule.customPrice.amount;
+      } else {
+        return product.price * (1 - props.rule.customPrice.amount / 100);
+      }
+    }
+    return product.price;
+  }, [props.rule]);
+
+  //...
+}
+6. Trong component ModalSelectProduct:
+Tạo một state mới để lưu danh sách sản phẩm được chọn.
+Thêm props "onChange" để khi thông tin được chọn, nó sẽ gọi hàm onChange để lưu lại thông tin.
+Cập nhật hàm handleSelectProduct để lấy danh sách sản phẩm từ API và cập nhật state selectedProducts.
+Thêm hàm handleSave để lưu danh sách sản phẩm vào state của rule và gọi props.onChange để lưu lại thông tin. Ví dụ:
+function ModalSelectProduct(props) {
+    const [selectedProducts, setSelectedProducts] = useState([]);
+
+    const handleSelectProduct = useCallback(async () => {
+        // Call API to get list of products
+        //...
+
+        setSelectedProducts(response.data);
+    }, []);
+
+    const handleSave = useCallback(() => {
+        props.onChange({ ...props.rule, applyProduct: 'specific', selectedProducts });
+    }, [selectedProducts]);
+
+    //...
+}
+7. Trong component RadioButton:
+Thêm props "value" để truyền giá trị đang được chọn.
+Cập nhật hàm handleChange để gọi props.onChange khi giá trị thay đổi. Ví dụ:
+function RadioButton(props) {
+  const handleChange = useCallback((event) => {
+    props.onChange(event.target.value);
+  }, []);
+
+  return (
+    <div className="radio-button">
+      <input type="radio" name={props.name} checked={props.checked} value={props.value} onChange={handleChange} />
+      <label>{props.label}</label>
+    </div>
+  );
+}
+Các sửa đổi này sẽ giúp bạn tạo và lưu các rule mới vào localStorage, hiển thị sản phẩm theo yêu cầu của rule và áp dụng giá cả tuỳ chỉnh cho sản phẩm. Ngoài ra, bạn cũng có thể chọn danh sách sản phẩm cụ thể áp dụng cho rule.
+
+
+
+

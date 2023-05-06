@@ -1,0 +1,137 @@
+body {
+  font-family: Arial, sans-serif;
+  margin: 0;
+  padding: 0;
+}
+
+h1 {
+  text-align: center;
+  margin: 20px;
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+  border-spacing: 0;
+  border-radius: 10px;
+  margin-bottom: 0.5rem;
+  background-color: white;
+}
+
+th, td {
+    padding: 0.75rem;
+    vertical-align: center;
+    border-top: 1px solid #dee2e6;
+    text-align: center;
+}
+
+input[type="text"] {
+  padding: 10px;
+  width: 100%;
+  margin: 20px auto;
+  display: block;
+  box-sizing: border-box;
+  border: 2px solid #ccc;
+  border-radius: 4px;
+}
+
+#pagination {
+  text-align: center;
+}
+
+.active {
+  font-weight: bold;
+}
+
+.btn-search {
+  background-color: #f38e1a;
+  color: #ffffff;
+  border: none;
+  border-radius: 5px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.4);
+
+  padding: 10px;
+  cursor: pointer;
+}
+
+.btn-search:hover {
+  background-color: #f3600a;
+}
+
+.page-btn {
+  border: none;
+  border-radius: 50%;
+  width: 30px;
+  height: 30px;
+  margin: 5px;
+
+  background-color: #5792fa;
+  color: white;
+  cursor: pointer;
+}
+
+.page-btn:hover {
+  background-color: #0749b9;
+}
+
+.logs-container {
+  width: calc(100%-250px);
+  margin-top: 70px;
+  margin-left: 250px;
+  background-size: cover;
+  height: 100vh;
+  transition: 0.3s;
+}
+
+.logs-container .content-logs {
+  width: 80%;
+  margin: 0 auto;
+}
+
+.logs-container .content-logs .header-logs {
+  height: 40px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin: 0;
+
+}
+
+.logs-container .content-logs .header-logs .section-search {
+  display: flex;
+  align-items: center;
+}
+
+.section-search input {
+  height: 30px;
+  margin-right: 10px;
+}
+
+.act {
+  background-color: #0749b9;
+}
+
+.prev-btn {
+  background-color: #5792fa;
+  border: none;
+  color: white;
+  padding: 6px 10px;
+  text-align: center;
+  text-decoration: none;
+  display: inline-block;
+  font-size: 14px;
+  margin: 2px 2px;
+  cursor: pointer;
+  border-radius: 5px;
+}
+
+.prev-btn:hover {
+  background-color: #0749b9;
+}
+
+.prev-btn:disabled {
+  background-color: gray;
+  cursor: default;
+}
+
+

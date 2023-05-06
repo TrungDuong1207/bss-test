@@ -1,0 +1,12 @@
+##CÁC BƯỚC CÀI ĐẶT:
+b1: cd vào  thư mục week_4/server chạy lệnh:
+ > npm install
+ > chạy lệnh npm run start:dev để chạy server
+b2: cd vào thư mục week_4/ddt-app:
+ > npm install
+b3: cd vào thư mục week_4/ddt-app/web:
+ > npm install
+b4: cd vào thư mục week_4/ddt-app/web/frontend:
+ > npm install
+b5: cd ra ngoài week_4/ddt-app: (cd ../../)
+ > npm run dev

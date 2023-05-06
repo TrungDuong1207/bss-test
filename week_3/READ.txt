@@ -1,0 +1,4 @@
+#1 run server
+ cd server > npm install > npm run start:dev
+#2 run Client
+ cd client > npm install > npm run build > npm run start 

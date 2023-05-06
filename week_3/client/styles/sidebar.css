@@ -1,0 +1,56 @@
+.sidebar {
+    z-index: 1;
+
+    background: #ffffff;
+    position: fixed;
+    top: 50px;
+    width: 250px;
+    height: 100vh;
+
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.4);
+    padding-bottom: 50px;
+    overflow-y: auto;
+}
+
+
+.sidebar .sidebar-menu .item {
+    width: 250px;
+    overflow: hidden;
+}
+
+.sidebar .sidebar-menu .item .menu-btn {
+    display: block;
+    color: #000;
+    position: relative;
+    padding: 10px 20px;
+
+}
+
+.sidebar .sidebar-menu .item .menu-btn:hover {
+    color: #4CCEE8;
+}
+
+.sidebar .sidebar-menu .item .menu-btn.active {
+    background: rgb(2, 0, 36);
+    background: linear-gradient(90deg, rgba(2, 0, 36, 1) 0%, rgba(9, 9, 121, 1) 0%, rgba(0, 212, 255, 1) 87%);
+    color: white;
+    font-weight: bold;
+}
+
+.sidebar .sidebar-menu .item .menu-btn i {
+    margin-right: 20px;
+}
+
+@media (max-width: 414px) {
+    .sidebar {
+        left: -300px;
+        transition: all 0.3s ease-in-out;
+    }
+
+    .sidebar.active-sidebar {
+        left: 0;
+    }
+}
+
+
+/**Sidebar design end**/
